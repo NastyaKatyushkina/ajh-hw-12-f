@@ -1,16 +1,20 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const WorkboxPlugin = require('workbox-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 module.exports = {
+  mode: 'production',
   output: {
     path: path.resolve(__dirname, 'dist'),
   },
   module: {
     rules: [
       {
-        test: /web-worker\.js$/,
+        test: /service-worker\.js$/,
         use: {
           loader: 'worker-loader',
         },
@@ -20,6 +24,11 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
+          options: {
+            presets: [
+              '@babel/preset-env',
+            ],
+          },
         },
       },
       {
@@ -37,16 +46,14 @@ module.exports = {
         ],
       },
       {
-        test: /\.(png|jpg|gif)$/i,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 8192,
-            },
-          },
-        ],
+        test: /\.(?:ico|png|jpg|jpeg|gif)$/i,
       },
+    ],
+  },
+  optimization: {
+    minimizer: [
+      new CssMinimizerPlugin(),
+      new TerserPlugin(),
     ],
   },
   plugins: [
@@ -58,9 +65,6 @@ module.exports = {
       filename: '[name].css',
       chunkFilename: '[id].css',
     }),
-    new WorkboxPlugin.GenerateSW({
-      clientsClaim: true,
-      skipWaiting: true,
-    }),
+    new CleanWebpackPlugin(),
   ],
 };
