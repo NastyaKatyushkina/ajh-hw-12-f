@@ -1,5 +1,5 @@
 {
-  "extends": ["airbnb", "prettier"],
+  "extends": "airbnb-base",
   "env": {
     "es6": true,
     "browser": true,
@@ -7,9 +7,15 @@
     "worker": true,
     "serviceworker": true
   },
-  "plugins": ["prettier"],
   "rules": {
-    "prettier/prettier": ["error"],
-    "no-restricted-syntax": ["error", "LabeledStatement", "WithStatement"]
+    "no-restricted-syntax": ["error", "LabeledStatement", "WithStatement"],
+    "no-alert": "off",
+    "class-methods-use-this": "off",
+    "no-unused-expressions": [
+      "error",
+      {
+        "allowTernary": true
+      }
+    ]
   }
 }

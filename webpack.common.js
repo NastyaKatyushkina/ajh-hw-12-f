@@ -11,6 +11,20 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /web-worker\.js$/,
+        use: {
+          loader: 'worker-loader',
+        },
+      },
+      {
+        test: /service.worker\.js$/,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
+      },
+      {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
@@ -18,7 +32,7 @@ module.exports = {
         },
       },
       {
-        test: /\.html$/,
+        test: /\.html$/i,
         use: [
           {
             loader: 'html-loader',
@@ -26,30 +40,21 @@ module.exports = {
         ],
       },
       {
-        test: /\.(png|jpg|gif)$/i,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 8192,
-              name: 'assets/[hash].[ext]',
-            },
-          },
-        ],
+        test: /\.(s*)css$/i,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
       },
       {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader'],
-      },
-      {
-        test: /\.svg$/,
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
+        generator: {
+          filename: 'img/[name][ext]',
+        },
       },
       {
-        test: /service\.worker\.js$/,
-        loader: 'worker-loader',
-        options: {
-          filename: '[name].js',
+        test: /\.(txt)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: '[name][ext]',
         },
       },
     ],
@@ -58,7 +63,6 @@ module.exports = {
     new HtmlWebPackPlugin({
       template: './src/index.html',
       filename: './index.html',
-      favicon: './src/favicon.ico',
     }),
     new MiniCssExtractPlugin({
       filename: '[name].css',

@@ -1,8 +1,10 @@
-import Widget from './engine/widget';
+import News from './News';
 
-export default function app() {
-  const widget = new Widget();
-  widget.init();
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js');
+  });
 }
 
-app();
+const news = new News(document.querySelector('.news'));
+news.init();
